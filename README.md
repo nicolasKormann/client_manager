@@ -103,7 +103,13 @@ O Nunes Sports foi construído com as seguintes tecnologias:
 git clone https://github.com/nicolasKormann/roines_customer_manager.git
 ```
 
-2. Instale as dependências do backend.
+2. Altere para a branch stage.
+
+```
+git checkout stage
+```
+
+3. Instale as dependências do backend.
 
 ```
 pip install -r requirements.txt
