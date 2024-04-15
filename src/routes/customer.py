@@ -9,7 +9,7 @@ customer_repo = CustomerRepository(DBConnectionandler)
 
 
 # Route to create a new customer
-@customer_routes.route('/customers', methods=['POST'])
+@customer_routes.route('/api/customers', methods=['POST'])
 def create_customer():
     try:
         data = request.json
@@ -23,7 +23,7 @@ def create_customer():
 
 
 # Route to get all customers
-@customer_routes.route('/customers', methods=['GET'])
+@customer_routes.route('/api/customers', methods=['GET'])
 def get_all_customers():
     try:
         response = customer_repo.get_all_customers()
@@ -33,7 +33,7 @@ def get_all_customers():
 
 
 # Route to update a customer
-@customer_routes.route('/customers/<int:customer_id>', methods=['PUT'])
+@customer_routes.route('/api/customers/<int:customer_id>', methods=['PUT'])
 def update_customer(customer_id):
     try:
         data = request.json
@@ -47,7 +47,7 @@ def update_customer(customer_id):
     
 
 # Route to delete a customer
-@customer_routes.route('/customers/<int:customer_id>', methods=['DELETE'])
+@customer_routes.route('/api/customers/<int:customer_id>', methods=['DELETE'])
 def delete_customer(customer_id):
     try:
         response = customer_repo.delete_customer(customer_id)        
@@ -56,7 +56,7 @@ def delete_customer(customer_id):
         return jsonify({"error": f"An error occurred: {e}"}), 500
 
 # Route to generate a customer report
-@customer_routes.route('/customers/report', methods=['GET'])
+@customer_routes.route('/api/customers/report', methods=['GET'])
 def generate_customer_report():
     try:
         response = customer_repo.generate_customer_report()
