@@ -1,10 +1,12 @@
 from flask import Flask, Blueprint, redirect, render_template, Response, request, url_for
 from dataclasses import dataclass
+from flask_login import login_user
 import requests
 from oauthlib.oauth2 import WebApplicationClient
 from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 from dotenv import load_dotenv
 import os
+from src.controllers.login_manager import User
 
 load_dotenv()
 
@@ -69,5 +71,8 @@ def callback():
     except InvalidGrantError:
         return redirect(url_for('auth_routes.login'))
 
+    userinfo_response = requests.get(uri, headers=headers, data=body)
+    user = User(userinfo_response.json()['sub'])
+    login_user(user)
     return render_template('dash.html', userinfo=userinfo_response.json())
 

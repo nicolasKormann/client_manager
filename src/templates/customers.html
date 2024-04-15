@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Customer Manager</h2>
+
+        <!-- Formulário para adicionar novo cliente -->
+        <form id="newCustomerForm">
+            <div class="mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="text" class="form-control" id="phone" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Customer</button>
+        </form>
+
+        <!-- Tabela para mostrar os clientes -->
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Registration Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="customerTable">
+                <!-- Os clientes serão inseridos aqui -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.getElementById('newCustomerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+
+            axios.post('https://localhost:5000/api/customers', { full_name: name, email, phone })
+                .then(function (response) {
+                    // Atualiza a tabela após adicionar
+                    loadCustomers();
+                    // Limpa o formulário
+                    event.target.reset();
+                })
+                .catch(function (error) {
+                    console.error('Error adding customer:', error);
+                });
+        });
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
+        }
+
+        function loadCustomers() {
+            axios.get('https://localhost:5000/api/customers')
+                .then(function (response) {
+                    const customers = response.data;
+                    const tableBody = document.getElementById('customerTable');
+                    tableBody.innerHTML = ''; // Limpa tabela antes de adicionar novos dados
+
+                    customers.forEach(customer => {
+                        const row = `<tr>
+                                        <td>${customer.id}</td>
+                                        <td>${customer.full_name}</td>
+                                        <td>${customer.email}</td>
+                                        <td>${customer.phone}</td>
+                                        <td>${formatDate(customer.registration_date)}</td>
+                                        <td>
+                                            <button onclick="editCustomer(${customer.id})" class="btn btn-warning">Edit</button>
+                                            <button onclick="deleteCustomer(${customer.id})" class="btn btn-danger">Delete</button>
+                                        </td>
+                                    </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(function (error) {
+                    console.error('Error loading customers:', error);
+                });
+        }
+
+        function editCustomer(id) {
+            // Implementar edição de cliente
+        }
+
+        function deleteCustomer(id) {
+            axios.delete(`https://localhost:5000/api/customers/${id}`)
+                .then(function (response) {
+                    // Atualiza a tabela após deletar
+                    loadCustomers();
+                })
+                .catch(function (error) {
+                    console.error('Error deleting customer:', error);
+                });
+        }
+
+        // Carrega os clientes inicialmente
+        loadCustomers();
+    </script>
+</body>
+</html>
