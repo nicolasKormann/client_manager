@@ -27,7 +27,7 @@ def create_customer():
 def get_all_customers():
     try:
         response = customer_repo.get_all_customers()
-        return jsonify(response)
+        return jsonify([customer.serialize() for customer in response])
     except Exception as e:
         return jsonify({"error": f"An error occurred: {e}"}), 500
 
@@ -50,8 +50,7 @@ def update_customer(customer_id):
 @customer_routes.route('/customers/<int:customer_id>', methods=['DELETE'])
 def delete_customer(customer_id):
     try:
-        response = customer_repo.delete_customer(customer_id)
-        #status code
+        response = customer_repo.delete_customer(customer_id)        
         return jsonify(response.serialize())
     except Exception as e:
         return jsonify({"error": f"An error occurred: {e}"}), 500
