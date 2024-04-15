@@ -74,5 +74,5 @@ def callback():
     userinfo_response = requests.get(uri, headers=headers, data=body)
     user = User(userinfo_response.json()['sub'])
     login_user(user)
-    return redirect(url_for('pages.dashboard'))
+    return render_template('dashboard.html')
 
