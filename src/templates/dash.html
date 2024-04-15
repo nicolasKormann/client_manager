@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Dashboard</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Clientes</h2>
+                    </div>
+                    <div class="card-body">
+                        <a href="https://localhost:5000/customers" class="btn btn-primary mb-2">Visualizar Clientes</a>
+                        <a href="#" class="btn btn-success mb-2">Adicionar Cliente</a>
+                        <a href="#" class="btn btn-warning mb-2">Editar Cliente</a>
+                        <a href="#" class="btn btn-danger">Excluir Cliente</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Contatos</h2>
+                    </div>
+                    <div class="card-body">
+                        <a href="https://localhost:5000/contacts" class="btn btn-primary mb-2">Visualizar Contatos</a>
+                        <a href="#" class="btn btn-success mb-2">Adicionar Contato</a>
+                        <a href="#" class="btn btn-warning mb-2">Editar Contato</a>
+                        <a href="#" class="btn btn-danger">Excluir Contato</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Relatório -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <h2>Relatório Cliente-Contatos</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Contatos</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportBody">
+                        <!-- relatório -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    <!-- JavaScript para preencher o relatório -->
+    <script>
+  
+
+        fetch('https://localhost:5000/customers/report')
+        .then(response => response.json())
+        .then(data => fillReport(data)) 
+
+        function fillReport(data) {
+            let reportBody = document.getElementById('reportBody');
+            reportBody.innerHTML = '';
+
+            data.forEach(function(item) {
+                let row = document.createElement('tr');
+                let customerCell = document.createElement('td');
+                customerCell.textContent = item.customer_name;
+                row.appendChild(customerCell);
+
+                let contactsCell = document.createElement('td');
+                let contactsList = document.createElement('ul');
+
+                if (item.contacts.length > 0) {
+                    item.contacts.forEach(function(contact) {
+                        let contactItem = document.createElement('li');
+                        contactItem.textContent = `${contact.full_name} (${contact.email}, ${contact.phone})`;
+                        contactsList.appendChild(contactItem);
+                    });
+                } else {
+                    let noContactItem = document.createElement('li');
+                    noContactItem.textContent = "Nenhum contato encontrado";
+                    contactsList.appendChild(noContactItem);
+                }
+
+                contactsCell.appendChild(contactsList);
+                row.appendChild(contactsCell);
+
+                reportBody.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>
