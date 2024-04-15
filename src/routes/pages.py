@@ -9,11 +9,17 @@ pages = Blueprint('pages', __name__)
 def index():
     return render_template('login.html')
 
-@pages.route('/dash', methods=['GET'])
-def dash():
-    return render_template('dash.html')
+@pages.route('/dashboard', methods=['GET'])
+@login_required
+def dashboard():
+    return render_template('dashboard.html')
 
 @pages.route('/customers', methods=['GET'])
 @login_required
 def profile():
     return render_template('customers.html')
+
+@pages.route('/contacts', methods=['GET'])
+@login_required
+def contacts():
+    return render_template('contacts.html')

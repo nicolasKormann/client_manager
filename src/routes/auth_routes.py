@@ -44,7 +44,7 @@ def login():
 
     redirect_uri = oauth.prepare_request_uri(
         uri=hosts.authorization_endpoint,
-        redirect_uri='https://roines-customer-manager.onrender.com/auth/callback',
+        redirect_uri='https://localhost:5000/auth/callback',
         scope=['openid', 'email', 'profile']
     )
 
@@ -59,7 +59,7 @@ def callback():
         token_url, headers, body = oauth.prepare_token_request(
             token_url=hosts.token_endpoint,
             authorization_response=request.url,
-            redirect_url='https://roines-customer-manager.onrender.com/auth/callback',
+            redirect_url='https://localhost:5000/auth/callback',
             code=code,
             client_secret=GOOGLE_CLIENT_SECRET
         )
@@ -74,5 +74,5 @@ def callback():
     userinfo_response = requests.get(uri, headers=headers, data=body)
     user = User(userinfo_response.json()['sub'])
     login_user(user)
-    return render_template('dash.html', userinfo=userinfo_response.json())
+    return redirect(url_for('pages.dashboard'))
 

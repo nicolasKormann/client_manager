@@ -2,6 +2,7 @@ from flask import Flask
 from src.controllers.login_manager import login_manager  # Importe o login_manager do módulo login_user
 from src.routes.customer import customer_routes
 from src.routes.contact import contact_routes
+from src.routes.report import report_route
 from src.routes.pages import pages
 from src.routes.auth_routes import auth_routes
 import os
@@ -17,6 +18,8 @@ def create_app():
     app.register_blueprint(contact_routes)
     app.register_blueprint(pages)
     app.register_blueprint(auth_routes)
+    app.register_blueprint(report_route)
+    
 
     return app
 

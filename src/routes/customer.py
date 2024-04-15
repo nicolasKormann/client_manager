@@ -54,12 +54,3 @@ def delete_customer(customer_id):
         return jsonify(response.serialize())
     except Exception as e:
         return jsonify({"error": f"An error occurred: {e}"}), 500
-
-# Route to generate a customer report
-@customer_routes.route('/api/customers/report', methods=['GET'])
-def generate_customer_report():
-    try:
-        response = customer_repo.generate_customer_report()
-        return jsonify(response)
-    except Exception as e:
-        return jsonify({"error": f"An error occurred: {e}"}), 500
