@@ -2,7 +2,6 @@ from infra.entities.customer import Customer
 
 
 class CustomerRepository:
-
     def __init__(self, ConnectionHandler) -> None:
         self.__ConnectionHandler = ConnectionHandler
         self.__connection = self.__ConnectionHandler()
@@ -24,7 +23,7 @@ class CustomerRepository:
         with self.__connection as conn:
             try:
                 customers = conn.session.query(Customer).all()
-                return [customer.serialize() for customer in customers]
+                return customers
             except Exception as exception:
                 conn.session.rollback()
                 raise exception
