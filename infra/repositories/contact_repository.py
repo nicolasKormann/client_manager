@@ -11,11 +11,12 @@ class ContactRepository:
                 contact = Contact(full_name=full_name, email=email, phone=phone, customer_id=customer_id)
                 conn.session.add(contact)
                 conn.session.commit()
+                conn.session.refresh(contact)
                 return contact
             except Exception as exception:
                 conn.session.rollback()
                 raise exception 
-            
+                        
     def get_all_contacts(self):
         with self.__connection as conn:
             try:
@@ -34,14 +35,16 @@ class ContactRepository:
                 conn.session.rollback()
                 raise exception
             
-    def update_contact(self, contact_id, full_name, email, phone):
+    def update_contact(self, contact_id, full_name, email, phone, customer_id):
         with self.__connection as conn:
             try:
                 contact = conn.session.query(Contact).filter(Contact.id == contact_id).first()
                 contact.full_name = full_name
                 contact.email = email
                 contact.phone = phone
+                contact.customer_id = customer_id
                 conn.session.commit()
+                conn.session.refresh(contact)
                 return contact
             except Exception as exception:
                 conn.session.rollback()
@@ -53,6 +56,7 @@ class ContactRepository:
                 contact = conn.session.query(Contact).filter(Contact.id == contact_id).first()
                 conn.session.delete(contact)
                 conn.session.commit()
+                return contact
             except Exception as exception:
                 conn.session.rollback()
                 raise exception
