@@ -1,26 +1,26 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciamento de Clientes</title>
+    <title>Gerenciamento de Contatos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-5">
         <div class="row align-items-center mb-5">
             <div class="col">
-                <h2>Gerenciamento de Clientes</h2>
+                <h2>Gerenciamento de Contatos</h2>
             </div>
             <div class="col-auto">
                 <a href="/dashboard" class="btn btn-secondary">Voltar ao Dashboard</a>
             </div>
         </div>
-
-        <form id="newCustomerForm">
+            
+        <form id="newContactForm">
             <div class="mb-3">
-                <label for="name" class="form-label">Nome Completo</label>
-                <input type="text" class="form-control" id="name" required>
+                <label for="fullName" class="form-label">Nome Completo</label>
+                <input type="text" class="form-control" id="fullName" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
@@ -30,10 +30,13 @@
                 <label for="phone" class="form-label">Telefone</label>
                 <input type="text" class="form-control" id="phone" required>
             </div>
-            <button type="submit" class="btn btn-primary">Adicionar Cliente</button>
+            <div class="mb-3">
+                <label for="customerId" class="form-label">ID do Cliente</label>
+                <input type="number" class="form-control" id="customerId" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Adicionar Contato</button>
         </form>
 
-        <!-- Tabela para mostrar os clientes -->
         <table class="table mt-4">
             <thead>
                 <tr>
@@ -41,12 +44,11 @@
                     <th>Nome Completo</th>
                     <th>Email</th>
                     <th>Telefone</th>
-                    <th>Data de registro</th>
                     <th>Ações</th>
                 </tr>
             </thead>
-            <tbody id="customerTable">
-                <!-- Os clientes serão inseridos aqui -->
+            <tbody id="contactTable">
+                <!-- Os contatos serão inseridos aqui -->
             </tbody>
         </table>
     </div>
@@ -54,71 +56,67 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        document.getElementById('newCustomerForm').addEventListener('submit', function(event) {
+        document.getElementById('newContactForm').addEventListener('submit', function(event) {
             event.preventDefault();
-            const name = document.getElementById('name').value;
+            const fullName = document.getElementById('fullName').value;
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
+            const customerId = document.getElementById('customerId').value;
 
-            axios.post('/api/customers', { full_name: name, email, phone })
+            axios.post('/api/contacts', { full_name: fullName, email: email, phone: phone, customer_id: customerId })
                 .then(function (response) {
                     // Atualiza a tabela após adicionar
-                    loadCustomers();
+                    loadContacts();
                     // Limpa o formulário
                     event.target.reset();
                 })
                 .catch(function (error) {
-                    console.error('Error adding customer:', error);
+                    console.error('Error adding contact:', error);
                 });
         });
 
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
-        }
-
-        function loadCustomers() {
-            axios.get('api/customers')
+        function loadContacts() {
+            axios.get('api/contacts')
                 .then(function (response) {
-                    const customers = response.data;
-                    const tableBody = document.getElementById('customerTable');
+                    const contacts = response.data;
+                    const tableBody = document.getElementById('contactTable');
                     tableBody.innerHTML = ''; // Limpa tabela antes de adicionar novos dados
 
-                    customers.forEach(customer => {
+                    contacts.forEach(contact => {
                         const row = `<tr>
-                                        <td>${customer.id}</td>
-                                        <td>${customer.full_name}</td>
-                                        <td>${customer.email}</td>
-                                        <td>${customer.phone}</td>
-                                        <td>${formatDate(customer.registration_date)}</td>
+                                        <td>${contact.id}</td>
+                                        <td>${contact.full_name}</td>
+                                        <td>${contact.email}</td>
+                                        <td>${contact.phone}</td>
                                         <td>
-                                            <button onclick="editCustomer(${customer.id})" class="btn btn-warning">Edit</button>
-                                            <button onclick="deleteCustomer(${customer.id})" class="btn btn-danger">Delete</button>
+                                            <button onclick="editContact(${contact.id})" class="btn btn-warning">Edit</button>
+                                            <button onclick="deleteContact(${contact.id})" class="btn btn-danger">Delete</button>
                                         </td>
                                     </tr>`;
                         tableBody.innerHTML += row;
                     });
                 })
                 .catch(function (error) {
-                    console.error('Error loading customers:', error);
+                    console.error('Error loading contacts:', error);
                 });
         }
 
-        function editCustomer(id) {
-            // Implementar edição de cliente
+        function editContact(id) {
+            // Lógica para editar um contato
         }
 
-        function deleteCustomer(id) {
-            axios.delete(`api/customers/${id}`)
+        function deleteContact(id) {
+            axios.delete(`/api/contacts/${id}`)
                 .then(function (response) {
-                    loadCustomers();
+                    // Atualiza a tabela após deletar
+                    loadContacts();
                 })
                 .catch(function (error) {
-                    console.error('Error deleting customer:', error);
+                    console.error('Error deleting contact:', error);
                 });
         }
-
-        loadCustomers();
+        
+        loadContacts();
     </script>
 </body>
 </html>
